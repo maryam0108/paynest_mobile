@@ -48,7 +48,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           Text('Welcome to PayNest', style: GoogleFonts.inter(fontSize: 26, fontWeight: FontWeight.w600)),
           Text('Sign in with your NIDA and biometrics to unify your money — securely.',
               style: GoogleFonts.inter(color: Colors.white70)),
-          const SizedBox(height: 18),
+          const SizedBox(height: 28),
 
           Container(
             decoration: BoxDecoration(
