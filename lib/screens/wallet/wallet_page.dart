@@ -12,9 +12,9 @@ class WalletPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accountsToLink = [
-      {'id': 'mpesa', 'name': 'M-Pesa', 'type': 'Mobile Money'},
+      {'id': 'absa', 'name': 'Absa Tanzania', 'type': 'Bank'},
       {'id': 'airtel', 'name': 'Airtel Money', 'type': 'Mobile Money'},
-      {'id': 'absa', 'name': 'absa Bank', 'type': 'Bank'},
+      {'id': 'mpesa', 'name': 'M-Pesa', 'type': 'Mobile Money'},
       {'id': 'crdb', 'name': 'CRDB Bank', 'type': 'Bank'},
     ];
 

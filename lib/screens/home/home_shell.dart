@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:paynest_mobile/models/budget.dart';
 import 'package:paynest_mobile/models/goal.dart';
 import 'package:paynest_mobile/models/transaction.dart';
+import 'package:paynest_mobile/screens/auth/welcome_screen.dart';
 import 'package:paynest_mobile/screens/budget/budget_page.dart';
 import 'package:paynest_mobile/screens/budget/create_budget_page.dart';
 import 'package:paynest_mobile/screens/goals/create_goal_page.dart';
@@ -115,11 +116,16 @@ void addBudget(BudgetModel b) {
                 ListTile(
                   leading: const Icon(Icons.logout, color: Colors.white70),
                   title: Text('Logout', style: GoogleFonts.inter(color: Colors.white)),
-                  onTap: () {
-                    // Prototype: just pop drawer + show snackbar
+                  onTap: () async {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Logged out (prototype)')),
+                      const SnackBar(content: Text('Logged out ✅')),
+                    );
+                    await Future.microtask(() {});
+                    if (!mounted) return;
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+                      (route) => false, // remove everything
                     );
                   },
                 ),

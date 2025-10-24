@@ -63,9 +63,9 @@ class _ReportsPageState extends State<ReportsPage> {
       case 'airtel':
         return 'Airtel Money';
       case 'nmb':
-        return 'Absa Bank';
+        return 'Absa Tanzania';
       case 'absa':
-        return 'Absa Bank';
+        return 'Absa Tanzania';
       default:
         return 'Unknown Wallet';
     }

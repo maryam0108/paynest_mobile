@@ -1,7 +1,8 @@
-import 'dart:convert';
+// import 'dart:convert';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
+// import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:paynest_mobile/models/wallet.dart';
 import 'package:paynest_mobile/widgets/gradient_scaffold.dart';
 import 'package:paynest_mobile/widgets/app_button.dart';
@@ -17,6 +18,36 @@ class PayScanPage extends StatefulWidget {
 
 class _PayScanPageState extends State<PayScanPage> {
   bool _navigated = false;
+  CameraController? _cameraController;
+  Future<void>? _initializeControllerFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _initCamera();
+  }
+
+  Future<void> _initCamera() async {
+    try {
+      // Get list of available cameras
+      final cameras = await availableCameras();
+      final camera = cameras.firstWhere(
+        (cam) => cam.lensDirection == CameraLensDirection.back,
+        orElse: () => cameras.first,
+      );
+
+      _cameraController = CameraController(
+        camera,
+        ResolutionPreset.medium,
+        enableAudio: false,
+      );
+
+      _initializeControllerFuture = _cameraController!.initialize();
+      if (mounted) setState(() {});
+    } catch (e) {
+      debugPrint('Error initializing camera: $e');
+    }
+  }
 
   void _goToConfirm({String? merchant, double? amount}) {
     if (_navigated) return;
@@ -30,6 +61,12 @@ class _PayScanPageState extends State<PayScanPage> {
         ),
       ),
     ).then((_) => _navigated = false);
+  }
+
+  @override
+  void dispose() {
+    _cameraController?.dispose();
+    super.dispose();
   }
 
   @override
@@ -63,28 +100,44 @@ class _PayScanPageState extends State<PayScanPage> {
                 ],
               ),
               clipBehavior: Clip.antiAlias,
-              child: MobileScanner(
-                controller: MobileScannerController(
-                  formats: [BarcodeFormat.qrCode],
-                  detectionSpeed: DetectionSpeed.noDuplicates,
-                ),
-                onDetect: (capture) {
-                  final barcode = capture.barcodes.first;
-                  final raw = barcode.rawValue ?? '';
-                  // Try parse QR as JSON: {"merchant":"...", "amount":5000}
-                  try {
-                    final data = json.decode(raw);
-                    _goToConfirm(
-                      merchant: data['merchant']?.toString(),
-                      amount: (data['amount'] is num) ? (data['amount'] as num).toDouble() : null,
-                    );
-                  } catch (_) {
-                    // If not JSON, pass raw as merchant
-                    if (raw.isNotEmpty) _goToConfirm(merchant: raw, amount: 5000);
-                    else _goToConfirm();
-                  }
-                },
-              ),
+              child: 
+              // MobileScanner(
+              //   controller: MobileScannerController(
+              //     formats: [BarcodeFormat.qrCode],
+              //     detectionSpeed: DetectionSpeed.noDuplicates,
+              //   ),
+              //   onDetect: (capture) {
+              //     final barcode = capture.barcodes.first;
+              //     final raw = barcode.rawValue ?? '';
+              //     // Try parse QR as JSON: {"merchant":"...", "amount":5000}
+              //     try {
+              //       final data = json.decode(raw);
+              //       _goToConfirm(
+              //         merchant: data['merchant']?.toString(),
+              //         amount: (data['amount'] is num) ? (data['amount'] as num).toDouble() : null,
+              //       );
+              //     } catch (_) {
+              //       // If not JSON, pass raw as merchant
+              //       if (raw.isNotEmpty) _goToConfirm(merchant: raw, amount: 5000);
+              //       else _goToConfirm();
+              //     }
+              //   },
+              // ),
+              _cameraController == null
+                  ? const Center(
+                      child: CircularProgressIndicator(color: Colors.white))
+                  : FutureBuilder<void>(
+                      future: _initializeControllerFuture,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          return CameraPreview(_cameraController!);
+                        } else {
+                          return const Center(
+                              child:
+                                  CircularProgressIndicator(color: Colors.white));
+                        }
+                      },
+                    ),
             ),
 
             const SizedBox(height: 14),
