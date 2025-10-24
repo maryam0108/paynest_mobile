@@ -81,7 +81,18 @@ class _VerifyBiometricScreenState extends State<VerifyBiometricScreen> with Sing
             ],
           ),
           const SizedBox(height: 18),
-          Text('Secure your account', style: GoogleFonts.inter(fontSize: 26, fontWeight: FontWeight.w600)),
+          Row(
+              children: [
+                IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                ),
+                const SizedBox(width: 4),
+                Text('Secure your account',
+                    style: GoogleFonts.inter(fontSize: 26, fontWeight: FontWeight.w600)),
+              ],
+            ),
+          // Text('Secure your account', style: GoogleFonts.inter(fontSize: 26, fontWeight: FontWeight.w600)),
           Text('NIDA: ${widget.nida}\nMethod: ${widget.method == 'fingerprint' ? 'Fingerprint' : 'Face ID'}',
               style: GoogleFonts.inter(color: Colors.white70)),
           const SizedBox(height: 18),
